@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gənc DOST - Qeydiyyat Veb-Forması</title>
+    <title>Gənc DOST - Qeydiyyat Veb-Forması (Real-Time və Genişləndirilmiş)</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons & FontAwesome -->
@@ -67,13 +67,22 @@
         .form-label { font-weight: 600; color: #333; font-size: 0.9rem; margin-bottom: 0.4rem; }
         .form-label sup { color: #dc2626; }
         .form-control, .form-select {
-            border-radius: 8px; border: 1px solid #cbd5e1; padding: 0.65rem 0.9rem; font-size: 0.93rem; margin-bottom: 0.8rem;
+            border-radius: 8px; border: 1px solid #cbd5e1; padding: 0.65rem 0.9rem; font-size: 0.93rem; margin-bottom: 0.3rem;
         }
         .form-control:focus, .form-select:focus {
             border-color: rgba(215, 9, 139, .85); box-shadow: 0 0 0 0.2rem rgba(215, 9, 139, 0.15);
         }
         .field-hint {
-            font-size: 0.78rem; color: #64748b; margin-top: -0.5rem; margin-bottom: 0.8rem; display: block;
+            font-size: 0.78rem; color: #64748b; margin-top: 2px; margin-bottom: 0.8rem; display: block;
+        }
+        .field-error {
+            font-size: 0.78rem; color: #dc2626; margin-top: 2px; margin-bottom: 0.8rem; display: none; font-weight: 500;
+        }
+        .is-invalid-custom {
+            border-color: #dc2626 !important;
+        }
+        .is-valid-custom {
+            border-color: #16a34a !important;
         }
         .fin-info-btn {
             background: none; border: none; color: rgba(215, 9, 139, .85); font-size: 1rem;
@@ -82,9 +91,6 @@
         .fin-info-box {
             display: none; background: #fdf2f8; border: 1px solid rgba(215, 9, 139, 0.25);
             border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.83rem; color: #334155; margin-bottom: 0.8rem;
-        }
-        .fin-feedback {
-            font-size: 0.8rem; margin-top: -0.5rem; margin-bottom: 0.8rem; font-weight: 500;
         }
         .tehsil-block {
             background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;
@@ -103,7 +109,8 @@
         }
 
         .shift-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 1rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 0.4rem;
+            padding: 6px; border-radius: 8px; border: 1px solid transparent;
         }
         .shift-card {
             border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.75rem 0.9rem;
@@ -136,14 +143,11 @@
         }
         .dost-checkbox-item label { font-size: 0.93rem; color: #333; cursor: pointer; margin-bottom: 0; width: 100%; }
         .dost-checkbox-item.disabled-item { opacity: 0.55; cursor: not-allowed; }
-        .dost-checkbox-item.disabled-item label,
-        .dost-checkbox-item.disabled-item input { cursor: not-allowed; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Breadcrumb -->
     <div class="breadcrumb-nav">
         <nav style="font-size: .9rem;">
             <i class="fas fa-home" style="color: #999;"></i> <a href="#">Əsas səhifə</a> &gt; 
@@ -151,13 +155,11 @@
         </nav>
     </div>
 
-    <!-- Dinamik Xəbərdarlıq Qutusu (Təkrar FİN və ya Validasiya nümayişi üçün) -->
     <div id="demoAlertBox" class="alert alert-danger d-none" role="alert">
-        <i class="fas fa-exclamation-circle me-2"></i><span id="demoAlertText"></span>
+        <i class="fas fa-exclamation-circle me-2"></i><span id="demoAlertText">Ulduz (*) ilə işarələnmiş məcburi xanalar tam və ya düzgün doldurulmayıb. Zəhmət olmasa qırmızı işarələnmiş xanaları tamamlayın.</span>
     </div>
 
     <div class="row g-4">
-        <!-- Sol Tərəf - Başlıq və Bölmə Naviqasiyası -->
         <div class="col-lg-4">
             <div class="qeydiyyat-sidebar">
                 <div class="qeydiyyat-icon"><i class="bi bi-person-plus-fill"></i></div>
@@ -172,7 +174,7 @@
                         <i class="bi bi-chevron-right arrow"></i>
                     </button>    
                     <button class="sidebar-nav-btn" id="pills-tehsil-tab" data-bs-toggle="pill" data-bs-target="#pills-tehsil" type="button" role="tab">
-                        <i class="bi bi-journal-bookmark"></i> 2. Təhsil, Hobbi və Vaxt
+                        <i class="bi bi-journal-bookmark"></i> 2. Təhsil, Bacarıq və Vaxt
                         <i class="bi bi-chevron-right arrow"></i>
                     </button>
                     <button class="sidebar-nav-btn" id="pills-fayl-tab" data-bs-toggle="pill" data-bs-target="#pills-fayl" type="button" role="tab">
@@ -183,7 +185,6 @@
             </div>
         </div>
 
-        <!-- Sağ Tərəf - Qeydiyyat Forması -->
         <div class="col-lg-8">
             <form id="qeydiyyatform" novalidate>
                 <div class="tab-content" id="v-pills-tabContent">
@@ -193,14 +194,13 @@
                         <div class="content-card">
                             <h3 class="content-baslik">Şəxsi məlumatlar</h3>
                             <div class="row">
-                                <!-- S.A.A. -->
                                 <div class="col-md-6">
                                     <label for="ad" class="form-label">Soyadı, adı, atasının adı (S.A.A.) <sup>*</sup></label>
-                                    <input type="text" class="form-control" id="ad" placeholder="Məs: Əliyev Vəli Həsən oğlu" required>
-                                    <span class="field-hint">Zəhmət olmasa soyad, ad və ata adını tam şəkildə daxil edin.</span>
+                                    <input type="text" class="form-control" id="ad" placeholder="Məs: Əliyev Vəli Həsən oğlu" maxlength="100" required>
+                                    <span class="field-hint">Soyad, ad və ata adı tam daxil edilməlidir (rəqəm yazıla bilməz).</span>
+                                    <div id="adError" class="field-error">Zəhmət olmasa S.A.A. məlumatını rəqəm istifadə etmədən ən azı 3 söz şəklində daxil edin.</div>
                                 </div>
 
-                                <!-- FİN Kod + (i) düyməsi + Real-time yoxlama -->
                                 <div class="col-md-6">
                                     <label for="fin" class="form-label">
                                         FİN kod <sup>*</sup>
@@ -209,19 +209,20 @@
                                         </button>
                                     </label>
                                     <input type="text" class="form-control text-uppercase" id="fin" minlength="7" maxlength="7" placeholder="Məs: 5AB12CD" required>
-                                    <div id="finFeedback" class="fin-feedback"></div>
+                                    <span class="field-hint">Şəxsiyyət vəsiqəsindəki 7 simvollu unikal kod.</span>
+                                    <div id="finError" class="field-error">FİN kod 7 simvoldan ibarət olmalı və təkrar olmamalıdır.</div>
                                     <div id="finInfoBox" class="fin-info-box">
-                                        <strong>FİN kod nədir?</strong> Yeni tipli şəxsiyyət vəsiqələrində fotoşəklin olduğu üz tərəfinin sağ aşağı küncündə və ya köhnə şəxsiyyət vəsiqəsinin aşağı sağ küncündə yerləşən, 7 simvoldan ibarət unikal identifikasiya kodudur.
+                                        <strong>FİN kod nədir?</strong> Yeni tipli şəxsiyyət vəsiqələrində fotoşəklin olduğu üz tərəfinin sağ aşağı küncündə yerləşən 7 simvollu unikal identifikasiya kodudur.
                                     </div>
                                 </div>
 
-                                <!-- Doğum tarixi -->
                                 <div class="col-md-6">
                                     <label for="dogumtarixi" class="form-label">Doğum tarixi <sup>*</sup></label>
                                     <input type="date" class="form-control" id="dogumtarixi" required>
+                                    <span class="field-hint">Qeydiyyat üçün minimum yaş həddi 16-dır.</span>
+                                    <div id="dogumError" class="field-error">Namizəd 16 yaşından kiçik ola bilməz və ya gələcək tarix seçilə bilməz.</div>
                                 </div>
 
-                                <!-- Cins -->
                                 <div class="col-md-6">
                                     <label for="cins" class="form-label">Cinsiniz <sup>*</sup></label>
                                     <select class="form-select" id="cins" required>
@@ -229,24 +230,26 @@
                                         <option value="1">Kişi</option>
                                         <option value="2">Qadın</option>
                                     </select>
+                                    <div id="cinsError" class="field-error">Zəhmət olmasa cinsinizi seçin.</div>
                                 </div>
 
-                                <!-- Şəxsi mobil telefon -->
                                 <div class="col-md-6">
                                     <label for="telefon" class="form-label">Şəxsi mobil telefon <sup>*</sup></label>
                                     <input type="text" class="form-control" id="telefon" minlength="10" maxlength="10" placeholder="050xxxxxxx" required>
+                                    <span class="field-hint">Format: 050xxxxxxx (10 rəqəm).</span>
+                                    <div id="telefonError" class="field-error">Telefon nömrəsi 0 ilə başlayan 10 rəqəmdən ibarət olmalıdır.</div>
                                 </div>
 
-                                <!-- Email -->
                                 <div class="col-md-6">
                                     <label for="email" class="form-label">E-poçt ünvanı <sup>*</sup></label>
-                                    <input type="email" class="form-control" id="email" placeholder="example@mail.com" required>
+                                    <input type="email" class="form-control" id="email" placeholder="example@mail.com" maxlength="100" required>
+                                    <div id="emailError" class="field-error">Etibarlı e-poçt ünvanı daxil edin.</div>
                                 </div>
 
-                                <!-- Birinci dərəcəli ailə üzvünün əlaqə məlumatları -->
                                 <div class="col-md-6">
-                                    <label for="aile_telefon" class="form-label">Birinci dərəcəli ailə üzvünün mobil nömrəsi <sup>*</sup></label>
+                                    <label for="aile_telefon" class="form-label">Ailə üzvünün mobil nömrəsi <sup>*</sup></label>
                                     <input type="text" class="form-control" id="aile_telefon" minlength="10" maxlength="10" placeholder="050xxxxxxx" required>
+                                    <div id="aile_telefonError" class="field-error">Ailə üzvünün nömrəsi 0 ilə başlayan 10 rəqəmli formatda olmalıdır.</div>
                                 </div>
 
                                 <div class="col-md-6">
@@ -258,48 +261,96 @@
                                         <option value="Qardaş">Qardaş</option>
                                         <option value="Bacı">Bacı</option>
                                         <option value="Həyat yoldaşı">Həyat yoldaşı</option>
+                                        <option value="Digər">Digər</option>
                                     </select>
+                                    <div id="qohumluqError" class="field-error">Qohumluq dərəcəsini seçin.</div>
                                 </div>
 
-                                <!-- Şəhər -->
                                 <div class="col-md-6">
                                     <label for="seher" class="form-label">Şəhər <sup>*</sup></label>
                                     <select class="form-select" id="seher" required>
                                         <option value="">-Seçim edin-</option>
-                                        <option value="9">Bakı</option>
-                                        <option value="10">Sumqayıt</option>
-                                        <option value="11">Abşeron</option>
-                                        <option value="12">Gəncə</option>
-                                        <option value="13">Bərdə</option>
-                                        <option value="14">Sabirabad</option>
-                                        <option value="15">Quba</option>
+                                        <option value="9">Bakı şəhəri</option>
+                                        <option value="10">Gəncə şəhəri</option>
+                                        <option value="11">Sumqayıt şəhəri</option>
+                                        <option value="12">Lənkəran şəhəri</option>
+                                        <option value="13">Mingəçevir şəhəri</option>
+                                        <option value="14">Naftalan şəhəri</option>
+                                        <option value="15">Naxçıvan Muxtar Respublikası</option>
+                                        <option value="16">Şirvan şəhəri</option>
+                                        <option value="17">Xankəndi şəhəri</option>
+                                        <option value="18">Abşeron rayonu</option>
+                                        <option value="19">Ağcabədi rayonu</option>
+                                        <option value="20">Ağdam rayonu</option>
+                                        <option value="21">Ağdaş rayonu</option>
+                                        <option value="22">Ağstafa rayonu</option>
+                                        <option value="23">Ağsu rayonu</option>
+                                        <option value="24">Astara rayonu</option>
+                                        <option value="25">Babək rayonu</option>
+                                        <option value="26">Balakən rayonu</option>
+                                        <option value="27">Bərdə rayonu</option>
+                                        <option value="28">Beyləqan rayonu</option>
+                                        <option value="29">Biləsuvar rayonu</option>
+                                        <option value="30">Cəbrayıl rayonu</option>
+                                        <option value="31">Cəlilabad rayonu</option>
+                                        <option value="32">Daşkəsən rayonu</option>
+                                        <option value="33">Füzuli rayonu</option>
+                                        <option value="34">Gədəbəy rayonu</option>
+                                        <option value="35">Goranboy rayonu</option>
+                                        <option value="36">Göyçay rayonu</option>
+                                        <option value="37">Göygöl rayonu</option>
+                                        <option value="38">Hacıqabul rayonu</option>
+                                        <option value="39">Xaçmaz rayonu</option>
+                                        <option value="40">Xızı rayonu</option>
+                                        <option value="41">Xocalı rayonu</option>
+                                        <option value="42">Xocavənd rayonu</option>
+                                        <option value="43">İmişli rayonu</option>
+                                        <option value="44">İsmayıllı rayonu</option>
+                                        <option value="45">Kəlbəcər rayonu</option>
+                                        <option value="46">Kürdəmir rayonu</option>
+                                        <option value="47">Qax rayonu</option>
+                                        <option value="48">Qazax rayonu</option>
+                                        <option value="49">Qəbələ rayonu</option>
+                                        <option value="50">Qobustan rayonu</option>
+                                        <option value="51">Quba rayonu</option>
+                                        <option value="52">Qusar rayonu</option>
+                                        <option value="53">Laçın rayonu</option>
+                                        <option value="54">Lerik rayonu</option>
+                                        <option value="55">Masallı rayonu</option>
+                                        <option value="56">Neftçala rayonu</option>
+                                        <option value="57">Oğuz rayonu</option>
+                                        <option value="58">Saatlı rayonu</option>
+                                        <option value="59">Sabirabad rayonu</option>
+                                        <option value="60">Salyan rayonu</option>
+                                        <option value="61">Samux rayonu</option>
+                                        <option value="62">Siyəzən rayonu</option>
+                                        <option value="63">Şuşa rayonu</option>
+                                        <option value="64">Şamaxı rayonu</option>
+                                        <option value="65">Şəki rayonu</option>
+                                        <option value="66">Şəmkir rayonu</option>
+                                        <option value="67">Tərtər rayonu</option>
+                                        <option value="68">Tovuz rayonu</option>
+                                        <option value="69">Ucar rayonu</option>
+                                        <option value="70">Yardımlı rayonu</option>
+                                        <option value="71">Yevlax rayonu</option>
+                                        <option value="72">Zəngilan rayonu</option>
+                                        <option value="73">Zaqatala rayonu</option>
+                                        <option value="74">Zərdab rayonu</option>
                                     </select>
+                                    <div id="seherError" class="field-error">Şəhər seçilməlidir.</div>
                                 </div>
 
-                                <!-- Rayon -->
                                 <div class="col-md-6">
-                                    <label for="rayon" class="form-label">Rayon</label>
+                                    <label for="rayon" class="form-label">Rayon / İnzibati ərazi</label>
                                     <select class="form-select" id="rayon" disabled>
                                         <option value="">-Seçim edin-</option>
-                                        <option value="Binəqədi">Binəqədi</option>
-                                        <option value="Nərimanov">Nərimanov</option>
-                                        <option value="Nəsimi">Nəsimi</option>
-                                        <option value="Nizami">Nizami</option>
-                                        <option value="Sabunçu">Sabunçu</option>
-                                        <option value="Səbail">Səbail</option>
-                                        <option value="Suraxanı">Suraxanı</option>
-                                        <option value="Xətai">Xətai</option>
-                                        <option value="Xəzər">Xəzər</option>
-                                        <option value="Yasamal">Yasamal</option>
-                                        <option value="Qaradağ">Qaradağ</option>
-                                        <option value="Pirallahı">Pirallahı</option>
                                     </select>
                                 </div>
 
-                                <!-- Qeydiyyat ünvanı -->
                                 <div class="col-md-12">
                                     <label for="unvan" class="form-label">Qeydiyyat ünvanı <sup>*</sup></label>
-                                    <input type="text" class="form-control" id="unvan" placeholder="Şəxsiyyət vəsiqəsindəki qeydiyyat ünvanınızı daxil edin" required>
+                                    <input type="text" class="form-control" id="unvan" placeholder="Şəxsiyyət vəsiqəsindəki qeydiyyat ünvanınızı daxil edin" maxlength="200" required>
+                                    <div id="unvanError" class="field-error">Qeydiyyat ünvanı boş ola bilməz.</div>
                                 </div>
                             </div>
 
@@ -311,7 +362,7 @@
                         </div>
                     </div>
 
-                    <!-- BÖLMƏ 2: TƏHSİL, HOBBİLƏR VƏ KÖNÜLLÜLÜK VAXTI -->
+                    <!-- BÖLMƏ 2: TƏHSİL, BACARIQLAR VƏ VAXT -->
                     <div class="tab-pane fade" id="pills-tehsil" role="tabpanel">
                         <div class="content-card">
                             <h3 class="content-baslik">Təhsil məlumatları</h3>
@@ -322,7 +373,7 @@
                                         <div class="col-md-4">
                                             <label class="form-label">Təhsil pilləsi <sup>*</sup></label>
                                             <select class="form-select tehsil-pille-select" required>
-                                                <option value="">-Seçin-</option>
+                                                <option value="">-Seçim edin-</option>
                                                 <option value="Ümumi təhsil">Ümumi təhsil</option>
                                                 <option value="Peşə təhsili">Peşə təhsili</option>
                                                 <option value="Orta ixtisas təhsili">Orta ixtisas təhsili</option>
@@ -336,56 +387,36 @@
                                             </select>
                                         </div>
                                         <div class="col-md-4">
+                                            <label class="form-label">Təhsil forması <sup>*</sup></label>
+                                            <select class="form-select tehsil-forma-select" required>
+                                                <option value="">-Seçim edin-</option>
+                                                <option value="Əyani">Əyani</option>
+                                                <option value="Qiyabi">Qiyabi</option>
+                                                <option value="Distant">Distant (Qiyabi/Onlayn)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mt-2">
                                             <label class="form-label">Status <sup>*</sup></label>
-                                            <select class="form-select" required>
-                                                <option value="">-Seçin-</option>
+                                            <select class="form-select tehsil-status-select" required>
+                                                <option value="">-Seçim edin-</option>
                                                 <option value="Tələbə">Tələbə (Təhsil alır)</option>
                                                 <option value="Məzun">Məzun (Bitirib)</option>
+                                                <option value="Akademik məzuniyyət">Akademik məzuniyyətdə</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-12">
-                                            <label class="form-label">Təhsil müəssisəsinin adı <sup>*</sup></label>
+                                        <div class="col-md-8 mt-2">
+                                            <label class="form-label">İxtisas <sup>*</sup></label>
+                                            <input type="text" class="form-control tehsil-ixtisas-input" placeholder="Məs: Kompüter mühəndisliyi / Maliyyə / Hüquqşünaslıq" required>
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <label class="form-label">Təhsil müəssisəsi <sup>*</sup></label>
                                             <select class="form-select tehsil-muessise-select" required>
-                                                <option value="">-Vahid siyahıdan təhsil müəssisəsini seçin-</option>
-                                                <optgroup label="Ali Təhsil Müəssisələri">
-                                                    <option value="Bakı Dövlət Universiteti (BDU)">Bakı Dövlət Universiteti (BDU)</option>
-                                                    <option value="Azərbaycan Dövlət Neft və Sənaye Universiteti (ADNSU)">Azərbaycan Dövlət Neft və Sənaye Universiteti (ADNSU)</option>
-                                                    <option value="Azərbaycan Texniki Universiteti (AzTU)">Azərbaycan Texniki Universiteti (AzTU)</option>
-                                                    <option value="Azərbaycan Dövlət İqtisad Universiteti (UNEC)">Azərbaycan Dövlət İqtisad Universiteti (UNEC)</option>
-                                                    <option value="Azərbaycan Tibb Universiteti (ATU)">Azərbaycan Tibb Universiteti (ATU)</option>
-                                                    <option value="Azərbaycan Dillər Universiteti (ADU)">Azərbaycan Dillər Universiteti (ADU)</option>
-                                                    <option value="Azərbaycan Dövlət Pedaqoji Universiteti (ADPU)">Azərbaycan Dövlət Pedaqoji Universiteti (ADPU)</option>
-                                                    <option value="Azərbaycan Memarlıq və İnşaat Universiteti (AzMİU)">Azərbaycan Memarlıq və İnşaat Universiteti (AzMİU)</option>
-                                                    <option value="Bakı Mühəndislik Universiteti (BMU)">Bakı Mühəndislik Universiteti (BMU)</option>
-                                                    <option value="ADA Universiteti">ADA Universiteti</option>
-                                                    <option value="Azərbaycan Respublikasının Prezidenti yanında Dövlət İdarəçilik Akademiyası (DİA)">Azərbaycan Respublikasının Prezidenti yanında Dövlət İdarəçilik Akademiyası (DİA)</option>
-                                                    <option value="Milli Aviasiya Akademiyası (MAA)">Milli Aviasiya Akademiyası (MAA)</option>
-                                                    <option value="Bakı Slavyan Universiteti (BSU)">Bakı Slavyan Universiteti (BSU)</option>
-                                                    <option value="Azərbaycan Turizm və Menecment Universiteti (ATMU)">Azərbaycan Turizm və Menecment Universiteti (ATMU)</option>
-                                                    <option value="Bakı Ali Neft Məktəbi (BANM)">Bakı Ali Neft Məktəbi (BANM)</option>
-                                                    <option value="Xəzər Universiteti">Xəzər Universiteti</option>
-                                                    <option value="Qərbi Kaspi Universiteti">Qərbi Kaspi Universiteti</option>
-                                                    <option value="Sumqayıt Dövlət Universiteti (SDU)">Sumqayıt Dövlət Universiteti (SDU)</option>
-                                                    <option value="Gəncə Dövlət Universiteti (GDU)">Gəncə Dövlət Universiteti (GDU)</option>
-                                                    <option value="Qarabağ Universiteti">Qarabağ Universiteti</option>
-                                                </optgroup>
-                                                <optgroup label="Orta İxtisas Təhsili (Kolleclər)">
-                                                    <option value="Bakı Dövlət Sosial-İqtisadi Kolleci">Bakı Dövlət Sosial-İqtisadi Kolleci</option>
-                                                    <option value="Azərbaycan Dövlət Pedaqoji Kolleci">Azərbaycan Dövlət Pedaqoji Kolleci</option>
-                                                    <option value="Bakı İdarəetmə və Texnologiya Kolleci">Bakı İdarəetmə və Texnologiya Kolleci</option>
-                                                    <option value="Azərbaycan Maliyyə-İqtisad Kolleci">Azərbaycan Maliyyə-İqtisad Kolleci</option>
-                                                    <option value="Bakı Tibb Kolleci">Bakı Tibb Kolleci</option>
-                                                </optgroup>
-                                                <optgroup label="Peşə Təhsil Mərkəzləri və Ümumi Təhsil">
-                                                    <option value="Sənaye və İnnovasiyalar üzrə Bakı Dövlət Peşə Təhsil Mərkəzi">Sənaye və İnnovasiyalar üzrə Bakı Dövlət Peşə Təhsil Mərkəzi</option>
-                                                    <option value="Turizm və Sosial Xidmətlər üzrə Bakı Dövlət Peşə Təhsil Mərkəzi">Turizm və Sosial Xidmətlər üzrə Bakı Dövlət Peşə Təhsil Mərkəzi</option>
-                                                    <option value="Digər (Ümumi orta məktəb / Lisey / Gimnaziya)">Digər (Ümumi orta məktəb / Lisey / Gimnaziya)</option>
-                                                </optgroup>
+                                                <option value="">-Əvvəlcə təhsil pilləsini seçin-</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-12 diger-muessise-wrap" style="display: none;">
-                                            <label class="form-label">Məktəbin / Liseyin dəqiq adını daxil edin <sup>*</sup></label>
-                                            <input type="text" class="form-control" placeholder="Məs: Bakı şəhəri 132-134 nömrəli Təhsil Kompleksi">
+                                        <div class="col-md-12 diger-muessise-wrap mt-2" style="display: none;">
+                                            <label class="form-label">Müəssisənin (Universitet / Kollec / Məktəb) dəqiq adı <sup>*</sup></label>
+                                            <input type="text" class="form-control diger-muessise-input" placeholder="Məs: Xarici universitet və ya xüsusi lisey adı">
                                         </div>
                                     </div>
                                 </div>
@@ -395,41 +426,69 @@
                                 <i class="fas fa-plus-circle"></i> Növbəti təhsil pilləsi əlavə et (Məs: Magistratura)
                             </button>
 
-                            <h4 class="sub-section-title">Dil, Kompüter bilikləri və İş təcrübəsi</h4>
+                            <h4 class="sub-section-title">Dil və Kompüter bilikləri (Genişləndirilmiş Siyahı)</h4>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label for="dil_d" class="form-label">Dil bilikləri <sup>*</sup></label>
-                                    <input type="text" class="form-control" id="dil_d" placeholder="Məs: İngilis (B2), Rus (B1)" required>
+                                    <label for="dil_secim" class="form-label">Xarici dil və səviyyə <sup>*</sup></label>
+                                    <select class="form-select" id="dil_secim" required>
+                                        <option value="">-Seçim edin-</option>
+                                        <option value="İngilis dili (C1-C2 / Peşəkar)">İngilis dili (Peşəkar / C1-C2)</option>
+                                        <option value="İngilis dili (B1-B2 / Sərbəst)">İngilis dili (Sərbəst / B1-B2)</option>
+                                        <option value="İngilis dili (A1-A2 / Başlanğıc)">İngilis dili (Başlanğıc / A1-A2)</option>
+                                        <option value="Rus dili (Sərbəst)">Rus dili (Sərbəst)</option>
+                                        <option value="Rus dili (Orta)">Rus dili (Orta)</option>
+                                        <option value="Alman dili">Alman dili</option>
+                                        <option value="Fransız dili">Fransız dili</option>
+                                        <option value="Digər dil">Digər dil</option>
+                                    </select>
+                                    <div id="dilError" class="field-error">Xarici dil və səviyyə seçilməlidir.</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="komputer-bilikleri_d" class="form-label">Kompüter bilikləri</label>
-                                    <input type="text" class="form-control" id="komputer-bilikleri_d" placeholder="Məs: MS Office (Word, Excel)">
+                                    <label for="komputer_secim" class="form-label">Kompüter bacarıqları <sup>*</sup></label>
+                                    <select class="form-select" id="komputer_secim" required>
+                                        <option value="">-Seçim edin-</option>
+                                        <option value="MS Office (Word, Excel, PowerPoint, Outlook)">MS Office Paketləri (Tam)</option>
+                                        <option value="Məlumat bazaları və SQL/Data analitika">Məlumat bazaları və Data analitika</option>
+                                        <option value="Proqramlaşdırma (Python, JavaScript, C# və s.)">Proqramlaşdırma dilləri</option>
+                                        <option value="Qrafik dizayn (Photoshop, Illustrator, Figma)">Qrafik dizayn alətləri</option>
+                                        <option value="İdarəetmə sistemləri (ERP, CRM)">İdarəetmə sistemləri (ERP, CRM)</option>
+                                        <option value="Digər kompüter bacarıqları">Digər</option>
+                                    </select>
+                                    <div id="komputerError" class="field-error">Kompüter bacarıqları seçilməlidir.</div>
                                 </div>
                                 <div class="col-md-12">
                                     <label for="is-tecrubesi_d" class="form-label">İş və ya könüllülük təcrübəsi</label>
-                                    <input type="text" class="form-control" id="is-tecrubesi_d" placeholder="Əvvəlki fəaliyyətləriniz barədə qısa məlumat">
+                                    <input type="text" class="form-control" id="is-tecrubesi_d" placeholder="Əvvəlki fəaliyyətləriniz barədə qısa məlumat" maxlength="150">
                                 </div>
                             </div>
 
-                            <!-- 3. Hobbilər və xüsusi istedadlar -->
-                            <h4 class="sub-section-title">Hobbilər və xüsusi istedadlar</h4>
+                            <h4 class="sub-section-title">Hobbilər və maraq dairəsi (Genişləndirilmiş)</h4>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label for="hobbiniz_d" class="form-label">Hobbilər və maraq dairəsi</label>
-                                    <input type="text" class="form-control" id="hobbiniz_d" placeholder="Məs: Kitab oxumaq, şahmat, fotoqrafiya">
+                                    <label for="hobbi_secim" class="form-label">Əsas hobbi <sup>*</sup></label>
+                                    <select class="form-select" id="hobbi_secim" required>
+                                        <option value="">-Seçim edin-</option>
+                                        <option value="Kitab oxumaq, intellektual oyunlar">Kitab oxumaq, intellektual oyunlar</option>
+                                        <option value="İdman, atletika və sağlam həyat">İdman, atletika və sağlam həyat</option>
+                                        <option value="Musiqi, rəsm və teatr">Musiqi, rəsm və teatr</option>
+                                        <option value="İnnovasiya, İT və startap layihələri">İnnovasiya, İT və startap layihələri</option>
+                                        <option value="Sosial layihələr və xeyriyyəçilik">Sosial layihələr və xeyriyyəçilik</option>
+                                        <option value="Səyahət və təbiət">Səyahət və təbiət</option>
+                                        <option value="Digər">Digər</option>
+                                    </select>
+                                    <div id="hobbiError" class="field-error">Əsas hobbi seçilməlidir.</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="xususi-istedad_d" class="form-label">Xüsusi istedadlar və yaradıcı bacarıqlar</label>
-                                    <input type="text" class="form-control" id="xususi-istedad_d" placeholder="Məs: Rəsm çəkmək, musiqi alətində ifa, natiqlik">
+                                    <label for="xususi-istedad_d" class="form-label">Xüsusi istedadlar</label>
+                                    <input type="text" class="form-control" id="xususi-istedad_d" placeholder="Məs: Natiqlik, liderlik, xarici dil bilməsi" maxlength="100">
                                 </div>
                             </div>
 
-                            <!-- 4. Könüllülük fəaliyyəti üzrə seçimlər -->
                             <h4 class="sub-section-title">Könüllülük fəaliyyəti üzrə seçimlər</h4>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <label class="form-label">Könüllülük fəaliyyəti üçün uyğun vaxt (Bir və ya bir neçə növbə seçə bilərsiniz) <sup>*</sup></label>
-                                    <div class="shift-grid">
+                                    <label class="form-label">Könüllülük üçün uyğun vaxt növbələri <sup>*</sup></label>
+                                    <div class="shift-grid" id="shiftGridContainer">
                                         <label class="shift-card">
                                             <input type="checkbox" name="uygun_vaxt[]" value="1">
                                             <span><strong>I növbə:</strong> 09:00–12:00</span>
@@ -443,11 +502,12 @@
                                             <span><strong>III növbə:</strong> 15:00–18:00</span>
                                         </label>
                                     </div>
+                                    <div id="vaxtError" class="field-error">Ən azı bir uyğun vaxt növbəsi seçilməlidir.</div>
                                 </div>
 
                                 <div class="col-md-12">
-                                    <label class="form-label">Fəaliyyət göstərmək istədiyiniz DOST Mərkəzləri <sup>*</sup></label>
-                                    <div class="dost-merkezleri-container">
+                                    <label class="form-label">Fəaliyyət göstərmək istədiyiniz DOST Mərkəzləri (Maksimum 2) <sup>*</sup></label>
+                                    <div class="dost-merkezleri-container" id="merkezContainer">
                                         <div class="dost-checkbox-item">
                                             <input type="checkbox" class="dost-merkez-checkbox" id="m1">
                                             <label for="m1">1 saylı Bakı DOST Mərkəzi</label>
@@ -466,7 +526,7 @@
                                         </div>
                                         <div class="dost-checkbox-item">
                                             <input type="checkbox" class="dost-merkez-checkbox" id="m5">
-                                            <label for="m5">5 saylı Bakı DOST Mərkəzi</label>
+                                            <label for="m5">5 saylı Bakı DOST Mərkəzi</option>
                                         </div>
                                         <div class="dost-checkbox-item">
                                             <input type="checkbox" class="dost-merkez-checkbox" id="m6">
@@ -480,9 +540,9 @@
                                             <input type="checkbox" class="dost-merkez-checkbox" id="m8">
                                             <label for="m8">Naxçıvan Regional DOST Mərkəzi</label>
                                         </div>
-                                
                                     </div>
-                                    <span id="merkezLimitHint" class="field-hint">Seçilmiş mərkəz sayı: 0/2 (Maksimum 2 fərqli DOST Mərkəzi seçmək mümkündür).</span>
+                                    <span id="merkezLimitHint" class="field-hint">Seçilmiş mərkəz sayı: 0/2</span>
+                                    <div id="merkezError" class="field-error">Ən azı 1 DOST Mərkəzi seçilməlidir.</div>
                                 </div>
                             </div>
 
@@ -503,12 +563,14 @@
                             <h3 class="content-baslik">Sənədlər və Təsdiq</h3>
                             <div class="row">
                                 <div class="col-md-12 mb-3">
-                                    <label for="profilSekil" class="form-label"><i class="bi bi-person-bounding-box"></i> Profil şəkli (JPG, JPEG, PNG - max 2MB) <sup>*</sup></label>
+                                    <label for="profilSekil" class="form-label"><i class="bi bi-person-bounding-box"></i> Rəsmi profil şəkli (Ağ fonlu rəsmi foto, JPG/PNG - max 2MB) <sup>*</sup></label>
                                     <input type="file" class="form-control" id="profilSekil" accept=".jpg,.jpeg,.png" required/>
+                                    <div id="profilSekilError" class="field-error">Profil şəkli mütləq yüklənməlidir və həcmi 2 MB-dan çox olmamalıdır.</div>
                                 </div>
                                 <div class="col-md-12 mb-3">
-                                    <label for="cv" class="form-label"><i class="bi bi-file-earmark-text"></i> CV yükləyin (PDF, DOC, DOCX - max 5MB)</label>
-                                    <input type="file" class="form-control" id="cv" accept=".doc,.docx,.pdf"/>
+                                    <label for="cv" class="form-label"><i class="bi bi-file-earmark-text"></i> CV yükləyin (PDF, DOC, DOCX - max 5MB) <sup>*</sup></label>
+                                    <input type="file" class="form-control" id="cv" accept=".doc,.docx,.pdf" required/>
+                                    <div id="cvError" class="field-error">CV sənədi mütləq yüklənməlidir və həcmi 5 MB-dan çox olmamalıdır.</div>
                                 </div>
                                 <div class="col-md-12 mt-4 d-flex gap-2">
                                     <button type="button" class="btn btn-outline-secondary px-4" style="border-radius: 8px;" onclick="document.getElementById('pills-tehsil-tab').click();">
@@ -535,7 +597,7 @@
             <i class="fas fa-check"></i>
         </div>
         <h4 style="font-weight: 700; color: #333; margin-bottom: 0.8rem;">Təbriklər!</h4>
-        <p style="color: #666; font-size: 1rem; margin-bottom: 1.5rem;">Qeydiyyat məlumatlarınız uğurla qəbul edildi.</p>
+        <p style="color: #666; font-size: 1rem; margin-bottom: 1.5rem;">Qeydiyyat məlumatlarınız uğurla qəbul edildi və real-time yoxlamadan keçdi.</p>
         <button type="button" class="btn" data-bs-dismiss="modal" style="background-color: rgba(215, 9, 139, .85); color: #fff; padding: 0.7rem 2rem; border-radius: 8px; font-weight: 600; width: 100%;">Bağla</button>
       </div>
     </div>
@@ -547,24 +609,53 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // 1. Şəhər (Bakı = 9) seçildikdə Rayon xanasının aktivləşməsi
-    const seherEl = document.getElementById('seher');
-    const rayonEl = document.getElementById('rayon');
-    seherEl.addEventListener('change', function () {
-        if (this.value === '9') {
-            rayonEl.disabled = false;
-        } else {
-            rayonEl.disabled = true;
-            rayonEl.value = '';
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.target.nodeName !== 'TEXTAREA') {
+            e.preventDefault();
         }
     });
 
-    // 2. FİN kod (i) məlumat qutusu və canlı yoxlama (təkrar FİN simulyasiyası daxil)
+    const today = new Date();
+    const minAgeYear = today.getFullYear() - 16;
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    document.getElementById('dogumtarixi').max = `${minAgeYear}-${month}-${day}`;
+
+    const rayonlarMap = {
+        '9': [
+            'Binəqədi rayonu', 'Qaradağ rayonu', 'Nərimanov rayonu', 'Nəsimi rayonu', 
+            'Nizami rayonu', 'Pirallahı rayonu', 'Sabunçu rayonu', 'Səbail rayonu', 
+            'Suraxanı rayonu', 'Xətai rayonu', 'Xəzər rayonu', 'Yasamal rayonu'
+        ],
+        '15': [ 
+            'Naxçıvan şəhəri', 'Babək rayonu', 'Culfa rayonu', 'Kəngərli rayonu', 
+            'Ordubad rayonu', 'Sədərək rayonu', 'Şahbuz rayonu', 'Şərur rayonu'
+        ]
+    };
+
+    const seherEl = document.getElementById('seher');
+    const rayonEl = document.getElementById('rayon');
+    seherEl.addEventListener('change', function () {
+        const val = this.value;
+        rayonEl.innerHTML = '<option value="">-Seçim edin-</option>';
+        if (rayonlarMap[val]) {
+            rayonEl.disabled = false;
+            rayonlarMap[val].forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r;
+                opt.textContent = r;
+                rayonEl.appendChild(opt);
+            });
+        } else {
+            rayonEl.disabled = true;
+        }
+    });
+
     const finInput = document.getElementById('fin');
-    const finFeedback = document.getElementById('finFeedback');
+    const finError = document.getElementById('finError');
     const finInfoToggle = document.getElementById('finInfoToggle');
     const finInfoBox = document.getElementById('finInfoBox');
-    const movcudFinler = ['1111111', '5AB12CD']; // Demo üçün artıq qeydiyyatda olan FİN nümunələri
+    const movcudFinler = ['1111111', '5AB12CD'];
 
     finInfoToggle.addEventListener('click', function () {
         finInfoBox.style.display = (finInfoBox.style.display === 'block') ? 'none' : 'block';
@@ -572,26 +663,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     finInput.addEventListener('input', function () {
         this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        const val = this.value;
-        if (val.length === 0) {
-            finFeedback.textContent = '';
-            this.style.borderColor = '#cbd5e1';
-        } else if (val.length < 7) {
-            finFeedback.textContent = `FİN kod 7 simvoldan ibarət olmalıdır (hazırda: ${val.length}/7).`;
-            finFeedback.style.color = '#d97706';
-            this.style.borderColor = '#f59e0b';
-        } else if (movcudFinler.includes(val)) {
-            finFeedback.textContent = 'Bu FİN kod ilə sistemdə artıq qeydiyyat mövcuddur!';
-            finFeedback.style.color = '#dc2626';
-            this.style.borderColor = '#dc2626';
-        } else {
-            finFeedback.textContent = 'FİN kodun formatı düzgündür və qeydiyyat üçün uyğundur.';
-            finFeedback.style.color = '#16a34a';
-            this.style.borderColor = '#16a34a';
-        }
+        validateFin();
     });
 
-    // 3. Təhsil pilləsi -> Səviyyə dinamikası və çoxpilləli əlavəetmə
     const seviyyeMap = {
         'Ümumi təhsil': ['Ümumi orta (9 illik)', 'Tam orta (11 illik)'],
         'Peşə təhsili': ['İlk peşə', 'Texniki peşə', 'Yüksək texniki peşə'],
@@ -599,15 +673,34 @@ document.addEventListener('DOMContentLoaded', function () {
         'Ali təhsil': ['Bakalavriat', 'Magistratura', 'Doktorantura']
     };
 
+    const muessiseMap = {
+        'Ümumi təhsil': ['Bakı şəhəri 132-134 nömrəli Təhsil Kompleksi', 'Akademik Zərifə Əliyeva adına lisey', 'Bakı Türk Anadolu Liseyi', 'Digər (Məktəb / Lisey / Gimnaziya)'],
+        'Peşə təhsili': ['Sənaye və İnnovasiyalar üzrə Bakı Dövlət Peşə Təhsil Mərkəzi', 'Turizm və Sosial Xidmətlər üzrə Bakı Dövlət Peşə Təhsil Mərkəzi', 'Təhsil Nazirliyinin Sənaye Peşə Təhsil Mərkəzi', 'Digər'],
+        'Orta ixtisas təhsili': ['Bakı Dövlət Sosial-İqtisadi Kolleci', 'Azərbaycan Dövlət Pedaqoji Kolleci', 'Bakı İdarəetmə və Texnologiya Kolleci', 'Azərbaycan Maliyyə-İqtisad Kolleci', 'Bakı Tibb Kolleci', 'Digər'],
+        'Ali təhsil': [
+            'Bakı Dövlət Universiteti (BDU)', 'Azərbaycan Dövlət Neft və Sənaye Universiteti (ADNSU)', 'Azərbaycan Texniki Universiteti (AzTU)', 
+            'Azərbaycan Dövlət İqtisad Universiteti (UNEC)', 'Azərbaycan Tibb Universiteti (ATU)', 'Azərbaycan Dillər Universiteti (ADU)', 
+            'Azərbaycan Dövlət Pedaqoji Universiteti (ADPU)', 'Azərbaycan Memarlıq və İnşaat Universiteti (AzMİU)', 'Bakı Mühəndislik Universiteti (BMU)', 
+            'ADA Universiteti', 'Dövlət İdarəçilik Akademiyası (DİA)', 'Milli Aviasiya Akademiyası (MAA)', 'Bakı Slavyan Universiteti (BSU)', 
+            'Azərbaycan Turizm və Menecment Universiteti (ATMU)', 'Bakı Ali Neft Məktəbi (BANM)', 'Xəzər Universiteti', 'Qərbi Kaspi Universiteti', 
+            'Sumqayıt Dövlət Universiteti (SDU)', 'Gəncə Dövlət Universiteti (GDU)', 'Naxçıvan Dövlət Universiteti', 'Qarabağ Universiteti', 'Digər'
+        ]
+    };
+
     function bindTehsilBlock(block) {
         const pilleSelect = block.querySelector('.tehsil-pille-select');
         const seviyyeSelect = block.querySelector('.tehsil-seviyye-select');
         const muessiseSelect = block.querySelector('.tehsil-muessise-select');
         const digerWrap = block.querySelector('.diger-muessise-wrap');
+        const digerInput = block.querySelector('.diger-muessise-input');
 
         pilleSelect.addEventListener('change', function () {
             const pille = this.value;
-            seviyyeSelect.innerHTML = '<option value="">-Səviyyəni seçin-</option>';
+            seviyyeSelect.innerHTML = '<option value="">-Seçim edin-</option>';
+            muessiseSelect.innerHTML = '<option value="">-Seçim edin-</option>';
+            digerWrap.style.display = 'none';
+            digerInput.required = false;
+            
             if (seviyyeMap[pille]) {
                 seviyyeMap[pille].forEach(lvl => {
                     const opt = document.createElement('option');
@@ -616,10 +709,28 @@ document.addEventListener('DOMContentLoaded', function () {
                     seviyyeSelect.appendChild(opt);
                 });
             }
+            if (muessiseMap[pille]) {
+                muessiseMap[pille].forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m;
+                    opt.textContent = m;
+                    muessiseSelect.appendChild(opt);
+                });
+            }
         });
 
         muessiseSelect.addEventListener('change', function () {
-            digerWrap.style.display = (this.value === 'Digər (Ümumi orta məktəb / Lisey / Gimnaziya)') ? 'block' : 'none';
+            const isDiger = this.value.includes('Digər');
+            digerWrap.style.display = isDiger ? 'block' : 'none';
+            digerInput.required = isDiger;
+            if (!isDiger) {
+                digerInput.classList.remove('is-invalid-custom', 'is-valid-custom');
+            }
+        });
+
+        block.querySelectorAll('select, input').forEach(el => {
+            el.addEventListener('change', () => setFieldState(el, el.value.trim() !== ''));
+            el.addEventListener('input', () => setFieldState(el, el.value.trim() !== ''));
         });
     }
 
@@ -631,10 +742,18 @@ document.addEventListener('DOMContentLoaded', function () {
         const firstBlock = tehsilContainer.querySelector('.tehsil-block');
         const newBlock = firstBlock.cloneNode(true);
         
-        newBlock.querySelectorAll('select').forEach(s => s.value = '');
-        newBlock.querySelectorAll('input').forEach(i => i.value = '');
+        newBlock.querySelectorAll('select').forEach(s => {
+            s.value = '';
+            s.classList.remove('is-invalid-custom', 'is-valid-custom');
+        });
+        newBlock.querySelectorAll('input').forEach(i => {
+            i.value = '';
+            i.classList.remove('is-invalid-custom', 'is-valid-custom');
+        });
         newBlock.querySelector('.tehsil-seviyye-select').innerHTML = '<option value="">-Əvvəlcə pillə seçin-</option>';
+        newBlock.querySelector('.tehsil-muessise-select').innerHTML = '<option value="">-Əvvəlcə pillə seçin-</option>';
         newBlock.querySelector('.diger-muessise-wrap').style.display = 'none';
+        newBlock.querySelector('.diger-muessise-input').required = false;
 
         if (!newBlock.querySelector('.btn-remove-tehsil')) {
             const rmBtn = document.createElement('button');
@@ -650,8 +769,7 @@ document.addEventListener('DOMContentLoaded', function () {
         bindTehsilBlock(newBlock);
     });
 
-    // 4. DOST Mərkəzləri üzrə maksimum 2 seçim limiti
-    const merkezCheckboxes = document.querySelectorAll('.dost-merkez-checkbox:not([disabled])');
+    const merkezCheckboxes = document.querySelectorAll('.dost-merkez-checkbox');
     const merkezLimitHint = document.getElementById('merkezLimitHint');
 
     function updateMerkezLimit() {
@@ -662,41 +780,242 @@ document.addEventListener('DOMContentLoaded', function () {
                 cb.closest('.dost-checkbox-item').classList.toggle('disabled-item', checkedCount >= 2);
             }
         });
-        if (checkedCount >= 2) {
-            merkezLimitHint.textContent = 'Maksimum 2 mərkəz seçildi. Digərini seçmək üçün əvvəl seçilmişlərdən birini ləğv edin.';
-            merkezLimitHint.style.color = '#d9098b';
-        } else {
-            merkezLimitHint.textContent = `Seçilmiş mərkəz sayı: ${checkedCount}/2 (Maksimum 2 fərqli DOST Mərkəzi seçmək mümkündür).`;
-            merkezLimitHint.style.color = '#64748b';
-        }
+        merkezLimitHint.textContent = `Seçilmiş mərkəz sayı: ${checkedCount}/2 (Maksimum 2 fərqli mərkəz)`;
+        validateMerkez();
     }
     merkezCheckboxes.forEach(cb => cb.addEventListener('change', updateMerkezLimit));
 
-    // 5. Demo Form Submit (Təqdimat zamanı vizual reaksiya üçün)
+    document.querySelectorAll('input[name="uygun_vaxt[]"]').forEach(cb => {
+        cb.addEventListener('change', validateVaxt);
+    });
+
+    // Köməkçi Validasiya Funksiyaları
+    function setFieldState(el, isValid, errorEl = null) {
+        if (isValid) {
+            el.classList.remove('is-invalid-custom');
+            el.classList.add('is-valid-custom');
+            if (errorEl) errorEl.style.display = 'none';
+        } else {
+            el.classList.remove('is-valid-custom');
+            el.classList.add('is-invalid-custom');
+            if (errorEl) errorEl.style.display = 'block';
+        }
+        return isValid;
+    }
+
+    const adInput = document.getElementById('ad');
+    const adError = document.getElementById('adError');
+    function validateAd() {
+        const words = adInput.value.trim().split(/\s+/).filter(Boolean);
+        const hasNum = /\d/.test(adInput.value);
+        return setFieldState(adInput, words.length >= 3 && !hasNum, adError);
+    }
+    adInput.addEventListener('input', validateAd);
+
+    function validateFin() {
+        const val = finInput.value.trim();
+        return setFieldState(finInput, val.length === 7 && !movcudFinler.includes(val), finError);
+    }
+
+    const dogumInput = document.getElementById('dogumtarixi');
+    const dogumError = document.getElementById('dogumError');
+    function validateDogum() {
+        if (!dogumInput.value) return setFieldState(dogumInput, false, dogumError);
+        const val = new Date(dogumInput.value);
+        const maxAllowedDate = new Date();
+        maxAllowedDate.setFullYear(maxAllowedDate.getFullYear() - 16);
+        return setFieldState(dogumInput, !isNaN(val) && val <= maxAllowedDate, dogumError);
+    }
+    dogumInput.addEventListener('change', validateDogum);
+
+    const cinsInput = document.getElementById('cins');
+    const cinsError = document.getElementById('cinsError');
+    function validateCins() {
+        return setFieldState(cinsInput, cinsInput.value !== '', cinsError);
+    }
+    cinsInput.addEventListener('change', validateCins);
+
+    const telefonInput = document.getElementById('telefon');
+    const telefonError = document.getElementById('telefonError');
+    function validateTelefon() {
+        telefonInput.value = telefonInput.value.replace(/\D/g, '');
+        return setFieldState(telefonInput, /^0\d{9}$/.test(telefonInput.value), telefonError);
+    }
+    telefonInput.addEventListener('input', validateTelefon);
+
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    function validateEmail() {
+        const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
+        return setFieldState(emailInput, isValid, emailError);
+    }
+    emailInput.addEventListener('input', validateEmail);
+
+    const aileTelInput = document.getElementById('aile_telefon');
+    const aileTelError = document.getElementById('aile_telefonError');
+    function validateAileTel() {
+        aileTelInput.value = aileTelInput.value.replace(/\D/g, '');
+        return setFieldState(aileTelInput, /^0\d{9}$/.test(aileTelInput.value), aileTelError);
+    }
+    aileTelInput.addEventListener('input', validateAileTel);
+
+    const qohumluqInput = document.getElementById('qohumluq');
+    const qohumluqError = document.getElementById('qohumluqError');
+    function validateQohumluq() {
+        return setFieldState(qohumluqInput, qohumluqInput.value !== '', qohumluqError);
+    }
+    qohumluqInput.addEventListener('change', validateQohumluq);
+
+    const seherError = document.getElementById('seherError');
+    function validateSeher() {
+        return setFieldState(seherEl, seherEl.value !== '', seherError);
+    }
+    seherEl.addEventListener('change', validateSeher);
+
+    const unvanInput = document.getElementById('unvan');
+    const unvanError = document.getElementById('unvanError');
+    function validateUnvan() {
+        return setFieldState(unvanInput, unvanInput.value.trim().length >= 3, unvanError);
+    }
+    unvanInput.addEventListener('input', validateUnvan);
+
+    const dilInput = document.getElementById('dil_secim');
+    const dilError = document.getElementById('dilError');
+    function validateDil() {
+        return setFieldState(dilInput, dilInput.value !== '', dilError);
+    }
+    dilInput.addEventListener('change', validateDil);
+
+    const komputerInput = document.getElementById('komputer_secim');
+    const komputerError = document.getElementById('komputerError');
+    function validateKomputer() {
+        return setFieldState(komputerInput, komputerInput.value !== '', komputerError);
+    }
+    komputerInput.addEventListener('change', validateKomputer);
+
+    const hobbiInput = document.getElementById('hobbi_secim');
+    const hobbiError = document.getElementById('hobbiError');
+    function validateHobbi() {
+        return setFieldState(hobbiInput, hobbiInput.value !== '', hobbiError);
+    }
+    hobbiInput.addEventListener('change', validateHobbi);
+
+    const shiftContainer = document.getElementById('shiftGridContainer');
+    const vaxtError = document.getElementById('vaxtError');
+    function validateVaxt() {
+        const checked = document.querySelectorAll('input[name="uygun_vaxt[]"]:checked').length > 0;
+        return setFieldState(shiftContainer, checked, vaxtError);
+    }
+
+    const merkezContainer = document.getElementById('merkezContainer');
+    const merkezError = document.getElementById('merkezError');
+    function validateMerkez() {
+        const checked = document.querySelectorAll('.dost-merkez-checkbox:checked').length > 0;
+        return setFieldState(merkezContainer, checked, merkezError);
+    }
+
+    const profilSekilInput = document.getElementById('profilSekil');
+    const profilSekilError = document.getElementById('profilSekilError');
+    function validateProfilSekil() {
+        const valid = profilSekilInput.files[0] && profilSekilInput.files[0].size <= 2 * 1024 * 1024;
+        return setFieldState(profilSekilInput, Boolean(valid), profilSekilError);
+    }
+    profilSekilInput.addEventListener('change', validateProfilSekil);
+
+    const cvInput = document.getElementById('cv');
+    const cvError = document.getElementById('cvError');
+    function validateCv() {
+        const valid = cvInput.files[0] && cvInput.files[0].size <= 5 * 1024 * 1024;
+        return setFieldState(cvInput, Boolean(valid), cvError);
+    }
+    cvInput.addEventListener('change', validateCv);
+
+    function validateAllTehsilBlocks() {
+        let firstInvalidEl = null;
+        document.querySelectorAll('.tehsil-block').forEach(block => {
+            const requiredFields = block.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                const valid = field.value.trim() !== '';
+                setFieldState(field, valid);
+                if (!valid && !firstInvalidEl) {
+                    firstInvalidEl = field;
+                }
+            });
+        });
+        return firstInvalidEl;
+    }
+
+    // Form Submit (Bütün 3 bölmə üzrə tam validasiya)
     const form = document.getElementById('qeydiyyatform');
     const alertBox = document.getElementById('demoAlertBox');
-    const alertText = document.getElementById('demoAlertText');
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         alertBox.classList.add('d-none');
 
-        const adVal = document.getElementById('ad').value.trim();
-        const finVal = finInput.value.trim();
+        // Bölmə 1 yoxlamaları
+        const tab1Checks = [
+            { valid: validateAd(), el: adInput },
+            { valid: validateFin(), el: finInput },
+            { valid: validateDogum(), el: dogumInput },
+            { valid: validateCins(), el: cinsInput },
+            { valid: validateTelefon(), el: telefonInput },
+            { valid: validateEmail(), el: emailInput },
+            { valid: validateAileTel(), el: aileTelInput },
+            { valid: validateQohumluq(), el: qohumluqInput },
+            { valid: validateSeher(), el: seherEl },
+            { valid: validateUnvan(), el: unvanInput }
+        ];
 
-        if (adVal.split(/\s+/).filter(Boolean).length < 3) {
-            alertText.textContent = 'Zəhmət olmasa Soyadı, Adı və Atasının adını (S.A.A.) tam şəkildə daxil edin.';
-            alertBox.classList.remove('d-none');
-            document.getElementById('pills-sexsi-tab').click();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            return;
-        }
+        // Bölmə 2 yoxlamaları
+        const invalidTehsilEl = validateAllTehsilBlocks();
+        const tab2Checks = [
+            { valid: !invalidTehsilEl, el: invalidTehsilEl },
+            { valid: validateDil(), el: dilInput },
+            { valid: validateKomputer(), el: komputerInput },
+            { valid: validateHobbi(), el: hobbiInput },
+            { valid: validateVaxt(), el: shiftContainer },
+            { valid: validateMerkez(), el: merkezContainer }
+        ];
 
-        if (movcudFinler.includes(finVal)) {
-            alertText.textContent = 'Diqqət! Daxil etdiyiniz FİN kod ilə sistemdə artıq qeydiyyat mövcuddur. Təkrar qeydiyyata icazə verilmir.';
+        // Bölmə 3 yoxlamaları
+        const tab3Checks = [
+            { valid: validateProfilSekil(), el: profilSekilInput },
+            { valid: validateCv(), el: cvInput }
+        ];
+
+        const firstInvalidTab1 = tab1Checks.find(item => !item.valid);
+        const firstInvalidTab2 = tab2Checks.find(item => !item.valid);
+        const firstInvalidTab3 = tab3Checks.find(item => !item.valid);
+
+        if (firstInvalidTab1 || firstInvalidTab2 || firstInvalidTab3) {
             alertBox.classList.remove('d-none');
-            document.getElementById('pills-sexsi-tab').click();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            let targetTabId = 'pills-sexsi-tab';
+            let targetElement = null;
+
+            if (firstInvalidTab1) {
+                targetTabId = 'pills-sexsi-tab';
+                targetElement = firstInvalidTab1.el;
+            } else if (firstInvalidTab2) {
+                targetTabId = 'pills-tehsil-tab';
+                targetElement = firstInvalidTab2.el;
+            } else {
+                targetTabId = 'pills-fayl-tab';
+                targetElement = firstInvalidTab3.el;
+            }
+
+            // Səhv olan bölməyə avtomatik keçid
+            const tabTrigger = new bootstrap.Tab(document.getElementById(targetTabId));
+            tabTrigger.show();
+
+            setTimeout(() => {
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    if (typeof targetElement.focus === 'function') targetElement.focus();
+                }
+            }, 150);
+
             return;
         }
 
