@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gənc DOST - Qeydiyyat Veb-Forması</title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons & FontAwesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
@@ -121,6 +119,58 @@
             width: 18px; height: 18px; accent-color: rgba(215, 9, 139, .85); cursor: pointer;
         }
 
+        .multi-select-box {
+            border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px;
+            max-height: 240px; overflow-y: auto; background-color: #fff; margin-bottom: 0.3rem;
+        }
+        .multi-select-box::-webkit-scrollbar { width: 6px; }
+        .multi-select-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+        .multi-check-item {
+            display: flex; align-items: center; padding: 6px 8px; border-radius: 6px;
+            transition: background 0.2s; cursor: pointer; margin-bottom: 2px;
+        }
+        .multi-check-item:hover { background-color: rgba(215, 9, 139, 0.05); }
+        .multi-check-item input[type="checkbox"] {
+            width: 17px; height: 17px; accent-color: rgba(215, 9, 139, .85); margin-right: 10px; cursor: pointer; flex-shrink: 0;
+        }
+        .multi-check-item label { font-size: 0.9rem; color: #333; cursor: pointer; margin-bottom: 0; width: 100%; }
+
+        .lang-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 6px 8px; border-radius: 6px; transition: background 0.2s; margin-bottom: 4px;
+        }
+        .lang-row:hover { background-color: rgba(215, 9, 139, 0.05); }
+        .lang-check-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .lang-check-wrap input[type="checkbox"] {
+            width: 17px; height: 17px; accent-color: rgba(215, 9, 139, .85); cursor: pointer;
+        }
+        .lang-check-wrap label { font-size: 0.9rem; color: #333; cursor: pointer; margin-bottom: 0; }
+        .lang-level-select {
+            width: 175px; padding: 0.35rem 0.6rem; font-size: 0.85rem; margin-bottom: 0;
+        }
+
+        .custom-lang-row {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+        }
+        .custom-lang-name {
+            flex: 1; padding: 0.45rem 0.7rem; font-size: 0.88rem; margin-bottom: 0;
+        }
+        .custom-lang-level {
+            width: 165px; padding: 0.45rem 0.6rem; font-size: 0.85rem; margin-bottom: 0;
+        }
+        .btn-remove-custom-lang {
+            background: #fee2e2; color: #dc2626; border: none; border-radius: 6px;
+            width: 34px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+        }
+        .btn-add-custom-lang {
+            background: rgba(215, 9, 139, 0.08); color: rgba(215, 9, 139, .95);
+            border: 1px dashed rgba(215, 9, 139, .6); border-radius: 8px;
+            padding: 0.4rem 0.85rem; font-size: 0.83rem; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px; margin-top: 4px;
+        }
+        .btn-add-custom-lang:hover { background: rgba(215, 9, 139, 0.15); }
+
         .btn-submit {
             background-color: rgba(215, 9, 139, .85); color: #fff; padding: 0.8rem 2rem; font-weight: 600;
             border-radius: 8px; border: none; transition: background 0.3s; width: 100%; cursor: pointer;
@@ -197,8 +247,8 @@
                                 <div class="col-md-6">
                                     <label for="ad" class="form-label">Soyadı, adı, atasının adı (S.A.A.) <sup>*</sup></label>
                                     <input type="text" class="form-control" id="ad" placeholder="Məs: Əliyev Vəli Həsən oğlu" maxlength="100" required>
-                                    <span class="field-hint">Soyad, ad və ata adı tam daxil edilməlidir (rəqəm yazıla bilməz).</span>
-                                    <div id="adError" class="field-error">Zəhmət olmasa S.A.A. məlumatını rəqəm istifadə etmədən ən azı 3 söz şəklində daxil edin.</div>
+                                    <span class="field-hint">Yalnız hərflərdən ibarət tam S.A.A. daxil edilməlidir.</span>
+                                    <div id="adError" class="field-error">Zəhmət olmasa S.A.A. məlumatını rəqəm və xüsusi simvol istifadə etmədən ən azı 3 söz şəklində daxil edin.</div>
                                 </div>
 
                                 <div class="col-md-6">
@@ -218,9 +268,9 @@
 
                                 <div class="col-md-6">
                                     <label for="dogumtarixi" class="form-label">Doğum tarixi <sup>*</sup></label>
-                                    <input type="date" class="form-control" id="dogumtarixi" required>
-                                    <span class="field-hint">Qeydiyyat üçün minimum yaş həddi 16-dır.</span>
-                                    <div id="dogumError" class="field-error">Namizəd 16 yaşından kiçik ola bilməz və ya gələcək tarix seçilə bilməz.</div>
+                                    <input type="text" class="form-control" id="dogumtarixi" placeholder="dd/mm/yyyy" maxlength="10" required>
+                                    <span class="field-hint">Yaş həddi 16-29 yaş arasıdır.</span>
+                                    <div id="dogumError" class="field-error">Doğum tarixi düzgün formatda olmalı və namizədin yaşı 16-29 yaş aralığında olmalıdır.</div>
                                 </div>
 
                                 <div class="col-md-6">
@@ -236,8 +286,8 @@
                                 <div class="col-md-6">
                                     <label for="telefon" class="form-label">Şəxsi mobil telefon <sup>*</sup></label>
                                     <input type="text" class="form-control" id="telefon" minlength="10" maxlength="10" placeholder="050xxxxxxx" required>
-                                    <span class="field-hint">Format: 050xxxxxxx (10 rəqəm).</span>
-                                    <div id="telefonError" class="field-error">Telefon nömrəsi 0 ilə başlayan 10 rəqəmdən ibarət olmalıdır.</div>
+                                    <span class="field-hint">Etibarlı operator kodu ilə (010, 050, 051, 055, 060, 070, 077, 099).</span>
+                                    <div id="telefonError" class="field-error">Etibarlı operator kodu (010, 050, 051, 055, 060, 070, 077, 099) ilə başlayan 10 rəqəmli nömrə daxil edin.</div>
                                 </div>
 
                                 <div class="col-md-6">
@@ -249,7 +299,7 @@
                                 <div class="col-md-6">
                                     <label for="aile_telefon" class="form-label">Ailə üzvünün mobil nömrəsi <sup>*</sup></label>
                                     <input type="text" class="form-control" id="aile_telefon" minlength="10" maxlength="10" placeholder="050xxxxxxx" required>
-                                    <div id="aile_telefonError" class="field-error">Ailə üzvünün nömrəsi 0 ilə başlayan 10 rəqəmli formatda olmalıdır.</div>
+                                    <div id="aile_telefonError" class="field-error">Etibarlı operator kodlu 10 rəqəmli nömrə daxil edin (şəxsi nömrə ilə eyni ola bilməz).</div>
                                 </div>
 
                                 <div class="col-md-6">
@@ -264,6 +314,12 @@
                                         <option value="Digər">Digər</option>
                                     </select>
                                     <div id="qohumluqError" class="field-error">Qohumluq dərəcəsini seçin.</div>
+                                </div>
+
+                                <div class="col-md-12" id="qohumluqDigerWrap" style="display: none;">
+                                    <label for="qohumluq_diger" class="form-label">Qohumluq dərəcəsini qeyd edin <sup>*</sup></label>
+                                    <input type="text" class="form-control" id="qohumluq_diger" placeholder="Məs: Əmi, Dayı, Xala, Baba və s." maxlength="60">
+                                    <div id="qohumluqDigerError" class="field-error">Qohumluq dərəcəsi mütləq qeyd olunmalıdır.</div>
                                 </div>
 
                                 <div class="col-md-6">
@@ -426,61 +482,177 @@
                                 <i class="fas fa-plus-circle"></i> Növbəti təhsil pilləsi əlavə et (Məs: Magistratura)
                             </button>
 
-                            <h4 class="sub-section-title">Dil və Kompüter bilikləri (Genişləndirilmiş Siyahı)</h4>
+                            <h4 class="sub-section-title">Dil və Kompüter bilikləri</h4>
                             <div class="row">
-                                <div class="col-md-6">
-                                    <label for="dil_secim" class="form-label">Xarici dil və səviyyə <sup>*</sup></label>
-                                    <select class="form-select" id="dil_secim" required>
-                                        <option value="">-Seçim edin-</option>
-                                        <option value="İngilis dili (C1-C2 / Peşəkar)">İngilis dili (Peşəkar / C1-C2)</option>
-                                        <option value="İngilis dili (B1-B2 / Sərbəst)">İngilis dili (Sərbəst / B1-B2)</option>
-                                        <option value="İngilis dili (A1-A2 / Başlanğıc)">İngilis dili (Başlanğıc / A1-A2)</option>
-                                        <option value="Rus dili (Sərbəst)">Rus dili (Sərbəst)</option>
-                                        <option value="Rus dili (Orta)">Rus dili (Orta)</option>
-                                        <option value="Alman dili">Alman dili</option>
-                                        <option value="Fransız dili">Fransız dili</option>
-                                        <option value="Digər dil">Digər dil</option>
-                                    </select>
-                                    <div id="dilError" class="field-error">Xarici dil və səviyyə seçilməlidir.</div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Xarici dillər və bilik səviyyəsi <sup>*</sup></label>
+                                    <div class="multi-select-box" id="dilContainer">
+                                        <div class="lang-row">
+                                            <div class="lang-check-wrap">
+                                                <input type="checkbox" class="dil-checkbox" id="dil_en" value="İngilis dili">
+                                                <label for="dil_en">İngilis dili</label>
+                                            </div>
+                                            <select class="form-select lang-level-select" id="level_en" disabled>
+                                                <option value="">-Səviyyə-</option>
+                                                <option value="Başlanğıc (A1-A2)">Başlanğıc (A1-A2)</option>
+                                                <option value="Sərbəst (B1-B2)">Sərbəst (B1-B2)</option>
+                                                <option value="Peşəkar (C1-C2)">Peşəkar (C1-C2)</option>
+                                            </select>
+                                        </div>
+                                        <div class="lang-row">
+                                            <div class="lang-check-wrap">
+                                                <input type="checkbox" class="dil-checkbox" id="dil_ru" value="Rus dili">
+                                                <label for="dil_ru">Rus dili</label>
+                                            </div>
+                                            <select class="form-select lang-level-select" id="level_ru" disabled>
+                                                <option value="">-Səviyyə-</option>
+                                                <option value="Başlanğıc">Başlanğıc</option>
+                                                <option value="Orta">Orta</option>
+                                                <option value="Sərbəst">Sərbəst</option>
+                                            </select>
+                                        </div>
+                                        <div class="lang-row">
+                                            <div class="lang-check-wrap">
+                                                <input type="checkbox" class="dil-checkbox" id="dil_de" value="Alman dili">
+                                                <label for="dil_de">Alman dili</label>
+                                            </div>
+                                            <select class="form-select lang-level-select" id="level_de" disabled>
+                                                <option value="">-Səviyyə-</option>
+                                                <option value="Başlanğıc (A1-A2)">Başlanğıc (A1-A2)</option>
+                                                <option value="Sərbəst (B1-B2)">Sərbəst (B1-B2)</option>
+                                                <option value="Peşəkar (C1-C2)">Peşəkar (C1-C2)</option>
+                                            </select>
+                                        </div>
+                                        <div class="lang-row">
+                                            <div class="lang-check-wrap">
+                                                <input type="checkbox" class="dil-checkbox" id="dil_fr" value="Fransız dili">
+                                                <label for="dil_fr">Fransız dili</label>
+                                            </div>
+                                            <select class="form-select lang-level-select" id="level_fr" disabled>
+                                                <option value="">-Səviyyə-</option>
+                                                <option value="Başlanğıc (A1-A2)">Başlanğıc (A1-A2)</option>
+                                                <option value="Sərbəst (B1-B2)">Sərbəst (B1-B2)</option>
+                                                <option value="Peşəkar (C1-C2)">Peşəkar (C1-C2)</option>
+                                            </select>
+                                        </div>
+                                        <div class="lang-row">
+                                            <div class="lang-check-wrap">
+                                                <input type="checkbox" class="dil-checkbox" id="dil_es" value="İspan dili">
+                                                <label for="dil_es">İspan dili</label>
+                                            </div>
+                                            <select class="form-select lang-level-select" id="level_es" disabled>
+                                                <option value="">-Səviyyə-</option>
+                                                <option value="Başlanğıc (A1-A2)">Başlanğıc (A1-A2)</option>
+                                                <option value="Sərbəst (B1-B2)">Sərbəst (B1-B2)</option>
+                                                <option value="Peşəkar (C1-C2)">Peşəkar (C1-C2)</option>
+                                            </select>
+                                        </div>
+                                        <div class="lang-row">
+                                            <div class="lang-check-wrap">
+                                                <input type="checkbox" class="dil-checkbox" id="dil_diger_cb" value="Digər dil">
+                                                <label for="dil_diger_cb">Digər dil</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="dilError" class="field-error">Ən azı bir xarici dil seçilməli və seçilmiş dillərin bilik səviyyəsi göstərilməlidir.</div>
+                                    
+                                    <div id="dilDigerWrap" class="mt-2" style="display: none;">
+                                        <label class="form-label">Digər xarici dillər və bilik səviyyəsi <sup>*</sup></label>
+                                        <div id="customLangList"></div>
+                                        <button type="button" class="btn-add-custom-lang" id="addCustomLangBtn">
+                                            <i class="fas fa-plus"></i> Əlavə dil artır
+                                        </button>
+                                        <div id="dilDigerError" class="field-error">Əlavə edilmiş hər bir dilin adı və bilik səviyyəsi qeyd olunmalıdır.</div>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="komputer_secim" class="form-label">Kompüter bacarıqları <sup>*</sup></label>
-                                    <select class="form-select" id="komputer_secim" required>
-                                        <option value="">-Seçim edin-</option>
-                                        <option value="MS Office (Word, Excel, PowerPoint, Outlook)">MS Office Paketləri (Tam)</option>
-                                        <option value="Məlumat bazaları və SQL/Data analitika">Məlumat bazaları və Data analitika</option>
-                                        <option value="Proqramlaşdırma (Python, JavaScript, C# və s.)">Proqramlaşdırma dilləri</option>
-                                        <option value="Qrafik dizayn (Photoshop, Illustrator, Figma)">Qrafik dizayn alətləri</option>
-                                        <option value="İdarəetmə sistemləri (ERP, CRM)">İdarəetmə sistemləri (ERP, CRM)</option>
-                                        <option value="Digər kompüter bacarıqları">Digər</option>
-                                    </select>
-                                    <div id="komputerError" class="field-error">Kompüter bacarıqları seçilməlidir.</div>
+
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Kompüter bacarıqları <sup>*</sup></label>
+                                    <div class="multi-select-box" id="komputerContainer">
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="komputer-checkbox" id="komp1" value="MS Office Paketləri (Word, Excel, PowerPoint, Outlook)">
+                                            <label for="komp1">MS Office Paketləri (Tam)</label>
+                                        </div>
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="komputer-checkbox" id="komp2" value="Məlumat bazaları və Data analitika">
+                                            <label for="komp2">Məlumat bazaları və Data analitika</label>
+                                        </div>
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="komputer-checkbox" id="komp3" value="Proqramlaşdırma dilləri">
+                                            <label for="komp3">Proqramlaşdırma dilləri</label>
+                                        </div>
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="komputer-checkbox" id="komp4" value="Qrafik dizayn alətləri">
+                                            <label for="komp4">Qrafik dizayn alətləri</label>
+                                        </div>
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="komputer-checkbox" id="komp5" value="İdarəetmə sistemləri (ERP, CRM)">
+                                            <label for="komp5">İdarəetmə sistemləri (ERP, CRM)</label>
+                                        </div>
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="komputer-checkbox" id="komp_diger_cb" value="Digər">
+                                            <label for="komp_diger_cb">Digər</label>
+                                        </div>
+                                    </div>
+                                    <div id="komputerError" class="field-error">Ən azı bir kompüter bacarığı seçilməlidir.</div>
+                                    <div id="komputerDigerWrap" class="mt-2" style="display: none;">
+                                        <label for="komputer_diger_text" class="form-label">Digər kompüter bacarığını qeyd edin <sup>*</sup></label>
+                                        <input type="text" class="form-control" id="komputer_diger_text" placeholder="Məs: AutoCAD, 1C, Video montaj və s." maxlength="80">
+                                        <div id="komputerDigerError" class="field-error">Digər kompüter bacarığı mütləq qeyd olunmalıdır.</div>
+                                    </div>
                                 </div>
-                                <div class="col-md-12">
+
+                                <div class="col-md-12 mt-1">
                                     <label for="is-tecrubesi_d" class="form-label">İş və ya könüllülük təcrübəsi</label>
                                     <input type="text" class="form-control" id="is-tecrubesi_d" placeholder="Əvvəlki fəaliyyətləriniz barədə qısa məlumat" maxlength="150">
                                 </div>
                             </div>
 
-                            <h4 class="sub-section-title">Hobbilər və maraq dairəsi (Genişləndirilmiş)</h4>
+                            <h4 class="sub-section-title">Hobbilər və maraq dairəsi</h4>
                             <div class="row">
-                                <div class="col-md-6">
-                                    <label for="hobbi_secim" class="form-label">Əsas hobbi <sup>*</sup></label>
-                                    <select class="form-select" id="hobbi_secim" required>
-                                        <option value="">-Seçim edin-</option>
-                                        <option value="Kitab oxumaq, intellektual oyunlar">Kitab oxumaq, intellektual oyunlar</option>
-                                        <option value="İdman, atletika və sağlam həyat">İdman, atletika və sağlam həyat</option>
-                                        <option value="Musiqi, rəsm və teatr">Musiqi, rəsm və teatr</option>
-                                        <option value="İnnovasiya, İT və startap layihələri">İnnovasiya, İT və startap layihələri</option>
-                                        <option value="Sosial layihələr və xeyriyyəçilik">Sosial layihələr və xeyriyyəçilik</option>
-                                        <option value="Səyahət və təbiət">Səyahət və təbiət</option>
-                                        <option value="Digər">Digər</option>
-                                    </select>
-                                    <div id="hobbiError" class="field-error">Əsas hobbi seçilməlidir.</div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Hobbilər <sup>*</sup></label>
+                                    <div class="multi-select-box" id="hobbiContainer">
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="hobbi-checkbox" id="hob1" value="Kitab oxumaq, intellektual oyunlar">
+                                            <label for="hob1">Kitab oxumaq, intellektual oyunlar</label>
+                                        </div>
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="hobbi-checkbox" id="hob2" value="İdman, atletika və sağlam həyat">
+                                            <label for="hob2">İdman, atletika və sağlam həyat</label>
+                                        </div>
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="hobbi-checkbox" id="hob3" value="Musiqi, rəsm və teatr">
+                                            <label for="hob3">Musiqi, rəsm və teatr</label>
+                                        </div>
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="hobbi-checkbox" id="hob4" value="İnnovasiya, İT və startap layihələri">
+                                            <label for="hob4">İnnovasiya, İT və startap layihələri</label>
+                                        </div>
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="hobbi-checkbox" id="hob5" value="Sosial layihələr və xeyriyyəçilik">
+                                            <label for="hob5">Sosial layihələr və xeyriyyəçilik</label>
+                                        </div>
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="hobbi-checkbox" id="hob6" value="Səyahət və təbiət">
+                                            <label for="hob6">Səyahət və təbiət</label>
+                                        </div>
+                                        <div class="multi-check-item">
+                                            <input type="checkbox" class="hobbi-checkbox" id="hob_diger_cb" value="Digər">
+                                            <label for="hob_diger_cb">Digər</label>
+                                        </div>
+                                    </div>
+                                    <div id="hobbiError" class="field-error">Ən azı bir hobbi seçilməlidir.</div>
+                                    <div id="hobbiDigerWrap" class="mt-2" style="display: none;">
+                                        <label for="hobbi_diger_text" class="form-label">Digər hobbini qeyd edin <sup>*</sup></label>
+                                        <input type="text" class="form-control" id="hobbi_diger_text" placeholder="Məs: Fotoqrafiya, Şahmat, Bloqçuluq və s." maxlength="80">
+                                        <div id="hobbiDigerError" class="field-error">Digər hobbi mütləq qeyd olunmalıdır.</div>
+                                    </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <label for="xususi-istedad_d" class="form-label">Xüsusi istedadlar</label>
-                                    <input type="text" class="form-control" id="xususi-istedad_d" placeholder="Məs: Natiqlik, liderlik, xarici dil bilməsi" maxlength="100">
+                                    <input type="text" class="form-control" id="xususi-istedad_d" placeholder="Məs: Natiqlik, liderlik, komanda işi, musiqi alətində ifa" maxlength="100">
                                 </div>
                             </div>
 
@@ -526,7 +698,7 @@
                                         </div>
                                         <div class="dost-checkbox-item">
                                             <input type="checkbox" class="dost-merkez-checkbox" id="m5">
-                                            <label for="m5">5 saylı Bakı DOST Mərkəzi</option>
+                                            <label for="m5">5 saylı Bakı DOST Mərkəzi</label>
                                         </div>
                                         <div class="dost-checkbox-item">
                                             <input type="checkbox" class="dost-merkez-checkbox" id="m6">
@@ -597,14 +769,13 @@
             <i class="fas fa-check"></i>
         </div>
         <h4 style="font-weight: 700; color: #333; margin-bottom: 0.8rem;">Təbriklər!</h4>
-        <p style="color: #666; font-size: 1rem; margin-bottom: 1.5rem;">Qeydiyyat məlumatlarınız uğurla qəbul edildi və real-time yoxlamadan keçdi.</p>
+        <p style="color: #666; font-size: 1rem; margin-bottom: 1.5rem;">Qeydiyyat məlumatlarınız uğurla qəbul edildi.</p>
         <button type="button" class="btn" data-bs-dismiss="modal" style="background-color: rgba(215, 9, 139, .85); color: #fff; padding: 0.7rem 2rem; border-radius: 8px; font-weight: 600; width: 100%;">Bağla</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -615,11 +786,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    const today = new Date();
-    const minAgeYear = today.getFullYear() - 16;
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    document.getElementById('dogumtarixi').max = `${minAgeYear}-${month}-${day}`;
+    const dogumInput = document.getElementById('dogumtarixi');
+    dogumInput.addEventListener('input', function() {
+        let v = this.value.replace(/\D/g, '');
+        if (v.length > 8) v = v.slice(0, 8);
+        if (v.length >= 5) {
+            this.value = v.slice(0, 2) + '/' + v.slice(2, 4) + '/' + v.slice(4);
+        } else if (v.length >= 3) {
+            this.value = v.slice(0, 2) + '/' + v.slice(2);
+        } else {
+            this.value = v;
+        }
+        validateDogum();
+    });
 
     const rayonlarMap = {
         '9': [
@@ -789,7 +968,6 @@ document.addEventListener('DOMContentLoaded', function () {
         cb.addEventListener('change', validateVaxt);
     });
 
-    // Köməkçi Validasiya Funksiyaları
     function setFieldState(el, isValid, errorEl = null) {
         if (isValid) {
             el.classList.remove('is-invalid-custom');
@@ -806,9 +984,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const adInput = document.getElementById('ad');
     const adError = document.getElementById('adError');
     function validateAd() {
-        const words = adInput.value.trim().split(/\s+/).filter(Boolean);
-        const hasNum = /\d/.test(adInput.value);
-        return setFieldState(adInput, words.length >= 3 && !hasNum, adError);
+        const val = adInput.value.trim();
+        const words = val.split(/\s+/).filter(Boolean);
+        const onlyLettersRegex = /^[a-zA-ZəƏıİöÖüÜğĞçÇşŞ\s-]+$/;
+        const isValid = words.length >= 3 && onlyLettersRegex.test(val) && words.every(w => /[a-zA-ZəƏıİöÖüÜğĞçÇşŞ]/.test(w));
+        return setFieldState(adInput, isValid, adError);
     }
     adInput.addEventListener('input', validateAd);
 
@@ -817,14 +997,35 @@ document.addEventListener('DOMContentLoaded', function () {
         return setFieldState(finInput, val.length === 7 && !movcudFinler.includes(val), finError);
     }
 
-    const dogumInput = document.getElementById('dogumtarixi');
     const dogumError = document.getElementById('dogumError');
     function validateDogum() {
-        if (!dogumInput.value) return setFieldState(dogumInput, false, dogumError);
-        const val = new Date(dogumInput.value);
-        const maxAllowedDate = new Date();
-        maxAllowedDate.setFullYear(maxAllowedDate.getFullYear() - 16);
-        return setFieldState(dogumInput, !isNaN(val) && val <= maxAllowedDate, dogumError);
+        const val = dogumInput.value.trim();
+        const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+        if (!regex.test(val)) return setFieldState(dogumInput, false, dogumError);
+
+        const parts = val.match(regex);
+        const day = parseInt(parts[1], 10);
+        const month = parseInt(parts[2], 10) - 1;
+        const year = parseInt(parts[3], 10);
+
+        const birthDate = new Date(year, month, day);
+        if (
+            birthDate.getFullYear() !== year ||
+            birthDate.getMonth() !== month ||
+            birthDate.getDate() !== day
+        ) {
+            return setFieldState(dogumInput, false, dogumError);
+        }
+
+        const now = new Date();
+        let age = now.getFullYear() - birthDate.getFullYear();
+        const m = now.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && now.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        const isValid = age >= 16 && age <= 29;
+        return setFieldState(dogumInput, isValid, dogumError);
     }
     dogumInput.addEventListener('change', validateDogum);
 
@@ -835,11 +1036,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     cinsInput.addEventListener('change', validateCins);
 
+    const validMobileRegex = /^(010|050|051|055|060|070|077|099)\d{7}$/;
+
     const telefonInput = document.getElementById('telefon');
     const telefonError = document.getElementById('telefonError');
     function validateTelefon() {
         telefonInput.value = telefonInput.value.replace(/\D/g, '');
-        return setFieldState(telefonInput, /^0\d{9}$/.test(telefonInput.value), telefonError);
+        const isValid = validMobileRegex.test(telefonInput.value);
+        if (aileTelInput.value.length > 0) {
+            validateAileTel();
+        }
+        return setFieldState(telefonInput, isValid, telefonError);
     }
     telefonInput.addEventListener('input', validateTelefon);
 
@@ -855,16 +1062,47 @@ document.addEventListener('DOMContentLoaded', function () {
     const aileTelError = document.getElementById('aile_telefonError');
     function validateAileTel() {
         aileTelInput.value = aileTelInput.value.replace(/\D/g, '');
-        return setFieldState(aileTelInput, /^0\d{9}$/.test(aileTelInput.value), aileTelError);
+        const isFormatValid = validMobileRegex.test(aileTelInput.value);
+        const isNotSame = aileTelInput.value !== telefonInput.value;
+
+        if (!isFormatValid) {
+            aileTelError.textContent = 'Etibarlı operator kodu (010, 050, 051, 055, 060, 070, 077, 099) ilə başlayan 10 rəqəmli nömrə daxil edin.';
+            return setFieldState(aileTelInput, false, aileTelError);
+        }
+        if (!isNotSame) {
+            aileTelError.textContent = 'Ailə üzvünün nömrəsi namizədin şəxsi mobil nömrəsi ilə eyni ola bilməz.';
+            return setFieldState(aileTelInput, false, aileTelError);
+        }
+        return setFieldState(aileTelInput, true, aileTelError);
     }
     aileTelInput.addEventListener('input', validateAileTel);
 
     const qohumluqInput = document.getElementById('qohumluq');
     const qohumluqError = document.getElementById('qohumluqError');
+    const qohumluqDigerWrap = document.getElementById('qohumluqDigerWrap');
+    const qohumluqDigerInput = document.getElementById('qohumluq_diger');
+    const qohumluqDigerError = document.getElementById('qohumluqDigerError');
+
     function validateQohumluq() {
-        return setFieldState(qohumluqInput, qohumluqInput.value !== '', qohumluqError);
+        const isSelected = qohumluqInput.value !== '';
+        setFieldState(qohumluqInput, isSelected, qohumluqError);
+        if (qohumluqInput.value === 'Digər') {
+            qohumluqDigerWrap.style.display = 'block';
+            return isSelected && validateQohumluqDiger();
+        } else {
+            qohumluqDigerWrap.style.display = 'none';
+            qohumluqDigerInput.value = '';
+            qohumluqDigerInput.classList.remove('is-invalid-custom', 'is-valid-custom');
+            qohumluqDigerError.style.display = 'none';
+            return isSelected;
+        }
+    }
+    function validateQohumluqDiger() {
+        if (qohumluqInput.value !== 'Digər') return true;
+        return setFieldState(qohumluqDigerInput, qohumluqDigerInput.value.trim().length >= 2, qohumluqDigerError);
     }
     qohumluqInput.addEventListener('change', validateQohumluq);
+    qohumluqDigerInput.addEventListener('input', validateQohumluqDiger);
 
     const seherError = document.getElementById('seherError');
     function validateSeher() {
@@ -879,26 +1117,206 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     unvanInput.addEventListener('input', validateUnvan);
 
-    const dilInput = document.getElementById('dil_secim');
+    const dilContainer = document.getElementById('dilContainer');
     const dilError = document.getElementById('dilError');
+    const dilDigerCb = document.getElementById('dil_diger_cb');
+    const dilDigerWrap = document.getElementById('dilDigerWrap');
+    const customLangList = document.getElementById('customLangList');
+    const addCustomLangBtn = document.getElementById('addCustomLangBtn');
+    const dilDigerError = document.getElementById('dilDigerError');
+
+    function createCustomLangRow(removable = true) {
+        const row = document.createElement('div');
+        row.className = 'custom-lang-row';
+
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.className = 'form-control custom-lang-name';
+        nameInput.placeholder = 'Dilin adı (Məs: Türk dili)';
+        nameInput.maxLength = 50;
+
+        const levelSelect = document.createElement('select');
+        levelSelect.className = 'form-select custom-lang-level';
+        levelSelect.innerHTML = `
+            <option value="">-Səviyyə-</option>
+            <option value="Başlanğıc (A1-A2)">Başlanğıc (A1-A2)</option>
+            <option value="Sərbəst (B1-B2)">Sərbəst (B1-B2)</option>
+            <option value="Peşəkar (C1-C2)">Peşəkar (C1-C2)</option>
+        `;
+
+        nameInput.addEventListener('input', validateDilDiger);
+        levelSelect.addEventListener('change', validateDilDiger);
+
+        row.appendChild(nameInput);
+        row.appendChild(levelSelect);
+
+        if (removable) {
+            const rmBtn = document.createElement('button');
+            rmBtn.type = 'button';
+            rmBtn.className = 'btn-remove-custom-lang';
+            rmBtn.title = 'Sil';
+            rmBtn.innerHTML = '<i class="fas fa-times"></i>';
+            rmBtn.onclick = function () {
+                row.remove();
+                validateDilDiger();
+            };
+            row.appendChild(rmBtn);
+        }
+
+        customLangList.appendChild(row);
+    }
+
+    addCustomLangBtn.addEventListener('click', function () {
+        createCustomLangRow(true);
+    });
+
+    document.querySelectorAll('.lang-row').forEach(row => {
+        const cb = row.querySelector('.dil-checkbox');
+        const lvlSelect = row.querySelector('.lang-level-select');
+
+        cb.addEventListener('change', function () {
+            if (lvlSelect) {
+                lvlSelect.disabled = !this.checked;
+                if (!this.checked) {
+                    lvlSelect.value = '';
+                    lvlSelect.classList.remove('is-invalid-custom', 'is-valid-custom');
+                }
+            }
+            if (this === dilDigerCb) {
+                if (this.checked) {
+                    dilDigerWrap.style.display = 'block';
+                    if (customLangList.children.length === 0) {
+                        createCustomLangRow(false);
+                    }
+                } else {
+                    dilDigerWrap.style.display = 'none';
+                    customLangList.innerHTML = '';
+                    dilDigerError.style.display = 'none';
+                }
+            }
+            validateDil();
+        });
+
+        if (lvlSelect) {
+            lvlSelect.addEventListener('change', validateDil);
+        }
+    });
+
+    function validateDilDiger() {
+        if (!dilDigerCb.checked) return true;
+        const rows = customLangList.querySelectorAll('.custom-lang-row');
+        if (rows.length === 0) return false;
+
+        let allValid = true;
+        rows.forEach(r => {
+            const nameInp = r.querySelector('.custom-lang-name');
+            const lvlSel = r.querySelector('.custom-lang-level');
+            const nameOk = nameInp.value.trim().length >= 2;
+            const lvlOk = lvlSel.value !== '';
+            setFieldState(nameInp, nameOk);
+            setFieldState(lvlSel, lvlOk);
+            if (!nameOk || !lvlOk) allValid = false;
+        });
+
+        dilDigerError.style.display = allValid ? 'none' : 'block';
+        return allValid;
+    }
+
     function validateDil() {
-        return setFieldState(dilInput, dilInput.value !== '', dilError);
-    }
-    dilInput.addEventListener('change', validateDil);
+        const checkedBoxes = document.querySelectorAll('.dil-checkbox:checked');
+        if (checkedBoxes.length === 0) {
+            dilError.textContent = 'Ən azı bir xarici dil seçilməlidir.';
+            setFieldState(dilContainer, false, dilError);
+            return false;
+        }
 
-    const komputerInput = document.getElementById('komputer_secim');
+        let allLevelsSelected = true;
+        checkedBoxes.forEach(cb => {
+            const lvlSelect = cb.closest('.lang-row').querySelector('.lang-level-select');
+            if (lvlSelect) {
+                const hasLevel = lvlSelect.value !== '';
+                setFieldState(lvlSelect, hasLevel);
+                if (!hasLevel) allLevelsSelected = false;
+            }
+        });
+
+        if (!allLevelsSelected) {
+            dilError.textContent = 'Seçilmiş hər bir xarici dil üzrə bilik səviyyəsini qeyd edin.';
+            setFieldState(dilContainer, false, dilError);
+            return false;
+        }
+
+        setFieldState(dilContainer, true, dilError);
+        return validateDilDiger();
+    }
+
+    const komputerContainer = document.getElementById('komputerContainer');
     const komputerError = document.getElementById('komputerError');
-    function validateKomputer() {
-        return setFieldState(komputerInput, komputerInput.value !== '', komputerError);
-    }
-    komputerInput.addEventListener('change', validateKomputer);
+    const kompDigerCb = document.getElementById('komp_diger_cb');
+    const kompDigerWrap = document.getElementById('komputerDigerWrap');
+    const kompDigerInput = document.getElementById('komputer_diger_text');
+    const kompDigerError = document.getElementById('komputerDigerError');
 
-    const hobbiInput = document.getElementById('hobbi_secim');
-    const hobbiError = document.getElementById('hobbiError');
-    function validateHobbi() {
-        return setFieldState(hobbiInput, hobbiInput.value !== '', hobbiError);
+    document.querySelectorAll('.komputer-checkbox').forEach(cb => {
+        cb.addEventListener('change', function () {
+            if (this === kompDigerCb) {
+                kompDigerWrap.style.display = this.checked ? 'block' : 'none';
+                if (!this.checked) {
+                    kompDigerInput.value = '';
+                    kompDigerInput.classList.remove('is-invalid-custom', 'is-valid-custom');
+                    kompDigerError.style.display = 'none';
+                }
+            }
+            validateKomputer();
+        });
+    });
+
+    function validateKomputerDiger() {
+        if (!kompDigerCb.checked) return true;
+        return setFieldState(kompDigerInput, kompDigerInput.value.trim().length >= 2, kompDigerError);
     }
-    hobbiInput.addEventListener('change', validateHobbi);
+    kompDigerInput.addEventListener('input', validateKomputerDiger);
+
+    function validateKomputer() {
+        const hasChecked = document.querySelectorAll('.komputer-checkbox:checked').length > 0;
+        setFieldState(komputerContainer, hasChecked, komputerError);
+        if (!hasChecked) return false;
+        return validateKomputerDiger();
+    }
+
+    const hobbiContainer = document.getElementById('hobbiContainer');
+    const hobbiError = document.getElementById('hobbiError');
+    const hobDigerCb = document.getElementById('hob_diger_cb');
+    const hobDigerWrap = document.getElementById('hobbiDigerWrap');
+    const hobDigerInput = document.getElementById('hobbi_diger_text');
+    const hobDigerError = document.getElementById('hobbiDigerError');
+
+    document.querySelectorAll('.hobbi-checkbox').forEach(cb => {
+        cb.addEventListener('change', function () {
+            if (this === hobDigerCb) {
+                hobDigerWrap.style.display = this.checked ? 'block' : 'none';
+                if (!this.checked) {
+                    hobDigerInput.value = '';
+                    hobDigerInput.classList.remove('is-invalid-custom', 'is-valid-custom');
+                    hobDigerError.style.display = 'none';
+                }
+            }
+            validateHobbi();
+        });
+    });
+
+    function validateHobbiDiger() {
+        if (!hobDigerCb.checked) return true;
+        return setFieldState(hobDigerInput, hobDigerInput.value.trim().length >= 2, hobDigerError);
+    }
+    hobDigerInput.addEventListener('input', validateHobbiDiger);
+
+    function validateHobbi() {
+        const hasChecked = document.querySelectorAll('.hobbi-checkbox:checked').length > 0;
+        setFieldState(hobbiContainer, hasChecked, hobbiError);
+        if (!hasChecked) return false;
+        return validateHobbiDiger();
+    }
 
     const shiftContainer = document.getElementById('shiftGridContainer');
     const vaxtError = document.getElementById('vaxtError');
@@ -945,7 +1363,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return firstInvalidEl;
     }
 
-    // Form Submit (Bütün 3 bölmə üzrə tam validasiya)
     const form = document.getElementById('qeydiyyatform');
     const alertBox = document.getElementById('demoAlertBox');
 
@@ -953,7 +1370,6 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         alertBox.classList.add('d-none');
 
-        // Bölmə 1 yoxlamaları
         const tab1Checks = [
             { valid: validateAd(), el: adInput },
             { valid: validateFin(), el: finInput },
@@ -962,23 +1378,21 @@ document.addEventListener('DOMContentLoaded', function () {
             { valid: validateTelefon(), el: telefonInput },
             { valid: validateEmail(), el: emailInput },
             { valid: validateAileTel(), el: aileTelInput },
-            { valid: validateQohumluq(), el: qohumluqInput },
+            { valid: validateQohumluq(), el: qohumluqInput.value === 'Digər' && !validateQohumluqDiger() ? qohumluqDigerInput : qohumluqInput },
             { valid: validateSeher(), el: seherEl },
             { valid: validateUnvan(), el: unvanInput }
         ];
 
-        // Bölmə 2 yoxlamaları
         const invalidTehsilEl = validateAllTehsilBlocks();
         const tab2Checks = [
             { valid: !invalidTehsilEl, el: invalidTehsilEl },
-            { valid: validateDil(), el: dilInput },
-            { valid: validateKomputer(), el: komputerInput },
-            { valid: validateHobbi(), el: hobbiInput },
+            { valid: validateDil(), el: dilDigerCb.checked && !validateDilDiger() ? customLangList : dilContainer },
+            { valid: validateKomputer(), el: kompDigerCb.checked && !validateKomputerDiger() ? kompDigerInput : komputerContainer },
+            { valid: validateHobbi(), el: hobDigerCb.checked && !validateHobbiDiger() ? hobDigerInput : hobbiContainer },
             { valid: validateVaxt(), el: shiftContainer },
             { valid: validateMerkez(), el: merkezContainer }
         ];
 
-        // Bölmə 3 yoxlamaları
         const tab3Checks = [
             { valid: validateProfilSekil(), el: profilSekilInput },
             { valid: validateCv(), el: cvInput }
@@ -1005,7 +1419,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 targetElement = firstInvalidTab3.el;
             }
 
-            // Səhv olan bölməyə avtomatik keçid
             const tabTrigger = new bootstrap.Tab(document.getElementById(targetTabId));
             tabTrigger.show();
 
